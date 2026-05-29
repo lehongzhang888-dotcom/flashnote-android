@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 启动器图标前景 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:translateX="30"
+        android:translateY="30">
+        <path
+            android:fillColor="#FF90CAF9"
+            android:pathData="M26,4L8,28h12v14l18,-24H26z" />
+    </group>
+</vector>

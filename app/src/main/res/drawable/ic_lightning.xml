@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 闪电图标 - 用于悬浮球 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#FFE0E0E0">
+    <path
+        android:fillColor="#FFE0E0E0"
+        android:pathData="M13,2L4,14h6v7l9,-12h-6z" />
+</vector>
