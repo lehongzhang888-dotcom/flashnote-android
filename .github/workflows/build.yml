@@ -37,19 +37,38 @@ jobs:
       - name: 授权 Gradle 执行权限
         run: chmod +x gradlew
 
-      - name: 构建 Release APK
-        run: ./gradlew assembleRelease
+      - name: 构建 APK
+        run: |
+          ./gradlew assembleRelease
+          ./gradlew assembleDebug
 
-      - name: 上传 APK 构建产物
+      - name: 签名 Release APK（使用 debug keystore）
+        run: |
+          APKSIGNER=$ANDROID_HOME/build-tools/34.0.0/apksigner
+          if [ -f "$APKSIGNER" ]; then
+            $APKSIGNER sign --ks ~/.android/debug.keystore \
+              --ks-pass pass:android \
+              --ks-key-alias androiddebugkey \
+              --key-pass pass:android \
+              --in app/build/outputs/apk/release/app-release-unsigned.apk \
+              --out app/build/outputs/apk/release/app-release.apk
+            echo "签名成功"
+          else
+            echo "apksigner 不可用，跳过签名"
+          fi
+
+      - name: 上传 Release APK（已签名）
         uses: actions/upload-artifact@v4
         with:
           name: flashnote-release-apk
-          path: app/build/outputs/apk/release/app-release-unsigned.apk
-          if-no-files-found: error
+          path: |
+            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/apk/release/app-release-unsigned.apk
+          if-no-files-found: warn
 
-      - name: 上传调试 APK
+      - name: 上传 Debug APK（已签名）
         uses: actions/upload-artifact@v4
         with:
           name: flashnote-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: warn
+          if-no-files-found: error
