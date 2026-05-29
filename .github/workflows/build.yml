@@ -44,18 +44,26 @@ jobs:
 
       - name: 签名 Release APK（使用 debug keystore）
         run: |
+          # 生成 debug keystore
+          keytool -genkey -v \
+            -keystore ~/.android/debug.keystore \
+            -alias androiddebugkey \
+            -storepass android \
+            -keypass android \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -dname "CN=Android Debug,O=Android,C=US" \
+            -noprompt 2>/dev/null || echo "keystore 已存在"
+          
           APKSIGNER=$ANDROID_HOME/build-tools/34.0.0/apksigner
-          if [ -f "$APKSIGNER" ]; then
-            $APKSIGNER sign --ks ~/.android/debug.keystore \
-              --ks-pass pass:android \
-              --ks-key-alias androiddebugkey \
-              --key-pass pass:android \
-              --in app/build/outputs/apk/release/app-release-unsigned.apk \
-              --out app/build/outputs/apk/release/app-release.apk
-            echo "签名成功"
-          else
-            echo "apksigner 不可用，跳过签名"
-          fi
+          $APKSIGNER sign --ks ~/.android/debug.keystore \
+            --ks-pass pass:android \
+            --ks-key-alias androiddebugkey \
+            --key-pass pass:android \
+            --in app/build/outputs/apk/release/app-release-unsigned.apk \
+            --out app/build/outputs/apk/release/app-release.apk
+          echo "签名成功"
 
       - name: 上传 Release APK（已签名）
         uses: actions/upload-artifact@v4
