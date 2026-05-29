@@ -39,44 +39,11 @@ jobs:
 
       - name: 构建 APK
         run: |
-          ./gradlew assembleRelease
           ./gradlew assembleDebug
-
-      - name: 签名 Release APK（使用 debug keystore）
-        run: |
-          # 生成 debug keystore
-          keytool -genkey -v \
-            -keystore ~/.android/debug.keystore \
-            -alias androiddebugkey \
-            -storepass android \
-            -keypass android \
-            -keyalg RSA \
-            -keysize 2048 \
-            -validity 10000 \
-            -dname "CN=Android Debug,O=Android,C=US" \
-            -noprompt 2>/dev/null || echo "keystore 已存在"
-          
-          APKSIGNER=$ANDROID_HOME/build-tools/34.0.0/apksigner
-          $APKSIGNER sign --ks ~/.android/debug.keystore \
-            --ks-pass pass:android \
-            --ks-key-alias androiddebugkey \
-            --key-pass pass:android \
-            --in app/build/outputs/apk/release/app-release-unsigned.apk \
-            --out app/build/outputs/apk/release/app-release.apk
-          echo "签名成功"
-
-      - name: 上传 Release APK（已签名）
-        uses: actions/upload-artifact@v4
-        with:
-          name: flashnote-release-apk
-          path: |
-            app/build/outputs/apk/release/app-release.apk
-            app/build/outputs/apk/release/app-release-unsigned.apk
-          if-no-files-found: warn
 
       - name: 上传 Debug APK（已签名）
         uses: actions/upload-artifact@v4
         with:
-          name: flashnote-debug-apk
+          name: flashnote-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
